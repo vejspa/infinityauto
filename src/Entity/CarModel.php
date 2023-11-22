@@ -10,8 +10,10 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Repository\CarModelRepository;
+use ApiPlatform\Metadata\Link;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Repository\CarModelRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CarModelRepository::class)]
@@ -25,8 +27,21 @@ use Doctrine\ORM\Mapping as ORM;
             uriTemplate: '/car_models/{id}',
             status: 200,
         ),
+        new Get(
+            uriTemplate: '/car_makes/{make_id}/car_models/{id}',
+            uriVariables: [
+                'make_id' => new Link(
+                    toProperty: 'make',
+                    fromClass: CarMake::class
+                ),
+                'id' => new Link(
+                    fromClass: CarModel::class
+                )
+            ],
+            status: 200,
+        ),
         new Post(
-            uriTemplate: '/car_models/{id}',
+            uriTemplate: '/car_models',
             status: 201,
         ),
         new Put(
@@ -46,14 +61,11 @@ class CarModel
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToMany(mappedBy: "models", targetEntity: CarType::class)]
-    private Collection $models;
-
     #[ORM\ManyToOne(targetEntity: CarMake::class, inversedBy: "models")]
     #[ORM\JoinColumn(name: "make_id", referencedColumnName: "id")]
     private ?CarMake $make = null;
 
-    #[ORM\OneToMany(mappedBy: 'models', targetEntity: CarType::class)]
+    #[ORM\OneToMany(mappedBy: "model", targetEntity: CarType::class)]
     private Collection $types;
     #[ORM\Column]
     private ?int $model_id = null;
@@ -64,8 +76,10 @@ class CarModel
     #[ORM\Column]
     private ?int $make_id = null;
 
-
-
+    public function __construct()
+    {
+        $this->types = new ArrayCollection();
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -122,12 +136,12 @@ class CarModel
     /**
      * @return Collection<int, CarType>
      */
-    public function getVariant(): Collection
+    public function getType(): Collection
     {
         return $this->types;
     }
 
-    public function addVariant(CarType $type): static
+    public function addType(CarType $type): static
     {
         if (!$this->types->contains($type)) {
             $this->types->add($type);
@@ -137,10 +151,9 @@ class CarModel
         return $this;
     }
 
-    public function removeVariant(CarType $type): static
+    public function removeType(CarType $type): static
     {
         if ($this->types->removeElement($type)) {
-            // set the owning side to null (unless already changed)
             if ($type->getModel() === $this) {
                 $type->setModel(null);
             }

@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Link;
 use App\Repository\CarTypeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +23,23 @@ use Doctrine\ORM\Mapping as ORM;
         ),
         new Get(
             uriTemplate: '/car_types/{id}',
+            status: 200,
+        ),
+        new Get(
+            uriTemplate: '/car_makes/{make_id}/car_models/{model_id}/car_types/{id}',
+            uriVariables: [
+                'make_id' => new Link(
+                    toProperty: 'make',
+                    fromClass: CarType::class
+                ),
+                'model_id' => new Link(
+                    toProperty: 'model',
+                    fromClass: CarType::class
+                ),
+                'id' => new Link(
+                    fromClass: CarType::class
+                )
+            ],
             status: 200,
         ),
         new Post(
@@ -51,7 +69,8 @@ class CarType
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'type')]
+    #[ORM\ManyToOne(targetEntity: CarModel::class, inversedBy: "types")]
+    #[ORM\JoinColumn(name: "model_id", referencedColumnName: "id")]
     private ?CarModel $model = null;
 
     public function getId(): ?int
