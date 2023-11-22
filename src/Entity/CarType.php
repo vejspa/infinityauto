@@ -51,6 +51,9 @@ class CarType
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[ORM\ManyToOne(inversedBy: 'type')]
+    private ?CarModel $model = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +79,18 @@ class CarType
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getModel(): ?CarModel
+    {
+        return $this->model;
+    }
+
+    public function setModel(?CarModel $model): static
+    {
+        $this->model = $model;
 
         return $this;
     }

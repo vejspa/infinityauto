@@ -8,6 +8,11 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Repository\CarMakeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
@@ -47,24 +52,26 @@ class CarMake
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $make_id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
+
+    #[ORM\OneToMany(mappedBy: "make", targetEntity: CarModel::class)]
+    private Collection $models;
+
+    public function __construct()
+    {
+        $this->models = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
-    public function getMakeId(): ?int
-    {
-        return $this->make_id;
-    }
 
-    public function setMakeId(int $make_id): static
+    public function setId(int $make_id): static
     {
-        $this->make_id = $make_id;
+        $this->id = $make_id;
 
         return $this;
     }
@@ -79,5 +86,31 @@ class CarMake
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getModels(): Collection
+    {
+        return $this->models;
+    }
+
+    public function addModel(CarModel $model): Collection
+    {
+        if (!$this->models->contains($model)) {
+            $this->models->add($model);
+            $model->setMake($this);
+        }
+
+        return $this->models;
+    }
+
+    public function removeModel(CarModel $model): Collection
+    {
+        if ($this->models->removeElement($model)) {
+            if ($model->getMake() === $this) {
+                $model->setMake(null);
+            }
+        }
+
+        return $this->models;
     }
 }

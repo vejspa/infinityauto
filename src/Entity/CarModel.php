@@ -8,6 +8,10 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Repository\CarModelRepository;
+use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
@@ -46,6 +50,15 @@ class CarModel
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\OneToMany(mappedBy: "models", targetEntity: CarType::class)]
+    private Collection $models;
+
+    #[ORM\ManyToOne(targetEntity: CarMake::class, inversedBy: "models")]
+    #[ORM\JoinColumn(name: "make_id", referencedColumnName: "id")]
+    private ?CarMake $make = null;
+
+    #[ORM\OneToMany(mappedBy: 'models', targetEntity: CarType::class)]
+    private Collection $types;
     #[ORM\Column]
     private ?int $model_id = null;
 
@@ -92,6 +105,48 @@ class CarModel
     public function setMakeId(int $make_id): static
     {
         $this->make_id = $make_id;
+
+        return $this;
+    }
+
+    public function getMake(): ?CarMake
+    {
+        return $this->make;
+    }
+
+    public function setMake(?CarMake $carMake): static
+    {
+        $this->make = $carMake;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CarType>
+     */
+    public function getVariant(): Collection
+    {
+        return $this->types;
+    }
+
+    public function addVariant(CarType $type): static
+    {
+        if (!$this->types->contains($type)) {
+            $this->types->add($type);
+            $type->setModel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVariant(CarType $type): static
+    {
+        if ($this->types->removeElement($type)) {
+            // set the owning side to null (unless already changed)
+            if ($type->getModel() === $this) {
+                $type->setModel(null);
+            }
+        }
 
         return $this;
     }
