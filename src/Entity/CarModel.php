@@ -67,6 +67,7 @@ class CarModel
 
     #[ORM\OneToMany(mappedBy: "model", targetEntity: CarType::class)]
     private Collection $types;
+  
     #[ORM\Column]
     private ?int $model_id = null;
 
