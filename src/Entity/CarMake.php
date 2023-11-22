@@ -13,6 +13,10 @@ use ApiPlatform\Metadata\Put;
 use App\Repository\CarMakeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Repository\CarMakeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CarMakeRepository::class)]
@@ -47,6 +51,7 @@ class CarMake
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;

@@ -12,6 +12,10 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\CarModelRepository;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Repository\CarModelRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CarModelRepository::class)]
@@ -63,8 +67,6 @@ class CarModel
 
     #[ORM\Column]
     private ?int $make_id = null;
-
-
 
     public function getId(): ?int
     {
