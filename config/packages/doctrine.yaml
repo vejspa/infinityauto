@@ -5,6 +5,7 @@ doctrine:
         charset: utf8
         host: tcp:infinityauto.database.windows.net
         port: 1433
+        url: '%env(resolve:DATABASE_URL)%'
         user: '%env(DATABASE_USER)%'
         password: '%env(DATABASE_PWD)%'
         dbname: '%env(DATABASE_NAME)%'
