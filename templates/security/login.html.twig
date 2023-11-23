@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+{% block head %}
+    <script>
+        // Ensure the DOM is fully loaded before attaching event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Attach the event listener to the form with the 'login-form' ID
+            document.getElementById('login-form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Get the username and password values from the form inputs
+                const username = document.getElementById('inputUsername').value;
+                const password = document.getElementById('inputPassword').value;
+
+                // Make the API request to the login_check endpoint
+                fetch('/api/login_check', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.token) {
+                            // Store the token in localStorage
+                            localStorage.setItem('jwt_token', data.token);
+
+                            // Redirect to another page upon successful login
+                            window.location.href = '/dashboard'; // Replace '/dashboard' with your target route
+                        } else {
+                            // Handle cases where login fails (e.g., wrong credentials)
+                            alert('Login failed! Please check your credentials.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred during login.');
+                    });
+            });
+        });
+    </script>
+
+{% endblock %}
+{% block body %}
+<form method="post" id="login-form">
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    {% if app.user %}
+        <div class="mb-3">
+            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %}
+
+    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+    <label for="inputUsername">Username</label>
+    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
+    <label for="inputPassword">Password</label>
+    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+
+    <input type="hidden" name="_csrf_token"
+           value="{{ csrf_token('authenticate') }}"
+    >
+
+    <button class="btn btn-lg btn-primary" type="submit">
+        Sign in
+    </button>
+</form>
+{% endblock %}
