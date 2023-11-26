@@ -1,5 +1,6 @@
 FROM php:8.2-fpm
 
+# Run as root user
 USER root
 
 # Install system dependencies including gnupg for key management
@@ -27,15 +28,22 @@ RUN docker-php-ext-install pdo pdo_mysql \
 # Copy Composer from the official Composer image
 COPY --chmod=755 --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-WORKDIR /var/www
-
+# Create the php user and group before changing file ownerships
 ARG USER_ID
 ARG GROUP_ID
+RUN groupadd -g $GROUP_ID php && \
+    useradd -u $USER_ID -g $GROUP_ID -s /bin/bash -m php
 
-# Configure the user and group for Debian
-RUN groupadd -g $GROUP_ID php \
-    && useradd -u $USER_ID -g $GROUP_ID -s /bin/bash -m php
+# Set the working directory
+WORKDIR /var/www
 
+# Copy your application's source code into the image
+COPY . /var/www
+
+# Set the ownership of the application files
+RUN chown -R php:php /var/www
+
+# Switch to the non-root user for security
 USER php
 
 CMD ["php-fpm"]

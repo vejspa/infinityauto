@@ -1,0 +1,13 @@
+**/.git
+**/.svn
+**/.hg
+node_modules/
+vendor/
+**/.gitignore
+**/.dockerignore
+docker-compose*.yml
+Dockerfile*
+**/README.md
+**/*.log
+temp/
+tmp/
