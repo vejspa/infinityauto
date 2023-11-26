@@ -1,0 +1,10 @@
+# Use the front controller as a fallback
+FallbackResource /index.php
+
+# Uncomment the following line to enable the RewriteEngine
+# RewriteEngine On
+
+# Uncomment and configure the following lines if you need to route traffic
+# through index.php and you don't have the FallbackResource directive available
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteRule ^ index.php [QSA,L]
