@@ -14,20 +14,6 @@ RUN apt-get update && apt-get install -y \
     make \
     gnupg
 
-# Install Microsoft ODBC Driver for SQL Server
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-    && apt-get update \
-    && ACCEPT_EULA=Y apt-get install -y msodbcsql17
-
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql \
-    && pecl install pdo_sqlsrv sqlsrv \
-    && docker-php-ext-enable pdo_sqlsrv sqlsrv
-
-RUN echo "extension=sqlsrv" >> /app/.heroku/php/etc/php/php.ini \
-    && echo "extension=pdo_sqlsrv" >> /app/.heroku/php/etc/php/php.ini
-
 # Copy Composer from the official Composer image
 COPY --chmod=755 --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 

@@ -10,11 +10,12 @@ services:
     volumes:
       - ./:/var/www
     environment:
-      - DB_HOST=infinityauto.database.windows.net
-      - DB_PORT=1433
-      - DB_USER=infinityauto
-      - DB_PASS=Lopas112233*
-      - DB_NAME=infinityauto
+      - DB_HOST=db-mysql-fra1-26683-do-user-15243687-0.c.db.ondigitalocean.com
+      - DB_PORT=25060
+      - DB_USER=doadmin
+      - DB_PASS=AVNS_BzCR2X5VXrF0z2M14nH
+      - DB_NAME=defaultdb
+      - CHARSET=UTF8
     command: >
       sh -c "
       php bin/console cache:clear --env=prod &&
