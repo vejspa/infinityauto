@@ -25,8 +25,8 @@ RUN docker-php-ext-install pdo pdo_mysql \
     && pecl install pdo_sqlsrv sqlsrv \
     && docker-php-ext-enable pdo_sqlsrv sqlsrv
 
-RUN echo "extension=sqlsrv" >> $PHP_INI_DIR/php.ini \
-    && echo "extension=pdo_sqlsrv" >> $PHP_INI_DIR/php.ini
+RUN echo "extension=sqlsrv" >> /usr/local/etc/php/php.ini \
+    && echo "extension=pdo_sqlsrv" >> /usr/local/etc/php/php.ini
 
 # Copy Composer from the official Composer image
 COPY --chmod=755 --from=composer:latest /usr/bin/composer /usr/local/bin/composer
