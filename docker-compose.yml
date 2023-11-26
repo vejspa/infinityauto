@@ -15,6 +15,11 @@ services:
       - DB_USER=infinityauto
       - DB_PASS=Lopas112233*
       - DB_NAME=infinityauto
+    command: >
+      sh -c "
+      php bin/console cache:clear --env=prod &&
+      php-fpm
+      "
 
   nginx:
     build:
