@@ -40,10 +40,10 @@ WORKDIR /var/www
 # Copy your application's source code into the image
 COPY . /var/www
 
-# Switch to the non-root user for running Composer
-USER php
+# Set the ownership of the application files
+RUN chown -R php:php /var/www
 
-# Run Composer dump-autoload
-RUN composer dump-autoload --optimize --classmap-authoritative --no-dev
+# Switch to the non-root user for security
+USER php
 
 CMD ["php-fpm"]
