@@ -1,11 +1,15 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Redirect to the public directory
+    # Handle API requests directly
+    RewriteCond %{REQUEST_URI} ^/api
+    RewriteRule ^(.*)$ /public/index.php [QSA,L]
+
+    # Redirect to the public directory for non-API requests
     RewriteCond %{REQUEST_URI} !^/public/
     RewriteRule ^(.*)$ /public/$1 [L]
 
-    # Route all requests not pointing to an actual file to index.php
+    # Route all non-file requests to index.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ /public/index.php [QSA,L]
 </IfModule>

@@ -10,7 +10,6 @@ services:
     volumes:
       - ./:/var/www
     environment:
-      - APP_ENV=prod
       - DB_HOST=infinityauto.database.windows.net
       - DB_PORT=1433
       - DB_USER=infinityauto
