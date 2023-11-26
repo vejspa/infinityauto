@@ -2,7 +2,7 @@ doctrine:
     dbal:
         # configure these for your database server
         driver: 'pdo_sqlsrv'
-        charset: utf8
+        charset: UTF-8
         host: tcp:infinityauto.database.windows.net
         port: 1433
         url: '%env(resolve:DATABASE_URL)%'
