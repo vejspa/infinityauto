@@ -40,8 +40,8 @@ WORKDIR /var/www
 # Copy your application's source code into the image
 COPY . /var/www
 
-# Set the ownership of the application files
-RUN chown -R php:php /var/www
+# Set the correct permissions for Symfony, suppressing errors if directories don't exist
+RUN if [ -d "var" ] && [ -d "vendor" ]; then chown -R $USER_ID:$GROUP_ID var vendor; fi
 
 # Switch to the non-root user for security
 USER php
