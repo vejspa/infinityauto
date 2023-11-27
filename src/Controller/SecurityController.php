@@ -1,41 +1,70 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use App\Service\TokenService;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use App\Entity\User;
 
 class SecurityController extends AbstractController
 {
-    #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
-    {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
-
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private TokenService $tokenService
+    ) {
     }
 
-    #[Route('/api/login_check', name: 'api_login_check', methods: ['POST'])]
-    public function apiLoginCheck(): JsonResponse
+    /**
+     * @throws Exception
+     */
+    #[Route('/api/login', name: 'api_login')]
+
+    public function login(Request $request): JsonResponse
     {
-        // The user's credentials are verified at this point.
-        // Symfony's security system automatically handles it and returns a JWT if authentication is successful.
-        // This method can be empty, as it's just a route to trigger the authentication process.
+        $data = json_decode($request->getContent(), true);
+        $username = $data['username'] ?? '';
+        $password = $data['password'] ?? '';
+
+        $user = $this->getUserByUsernameAndPassword($username, $password);
+
+        if (!$user) {
+            return $this->json(['message' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $jwtToken = $this->tokenService->createJwtToken($user);
+        $refreshToken = $this->tokenService->createRefreshToken($user);
+
+        return $this->json([
+            'token' => $jwtToken,
+            'refresh_token' => $refreshToken,
+        ]);
     }
 
-    #[Route(path: '/logout', name: 'app_logout')]
-    public function logout(): void
+    private function getUserByUsernameAndPassword(string $username, string $password): ?User
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        $userRepository = $this->entityManager->getRepository(User::class);
+        $user = $userRepository->findOneBy(['username' => $username]);
+
+        if (!$user) {
+            return null;
+        }
+
+        // Verify the password
+        if (!password_verify($password, $user->getPassword())) {
+            return null;
+        }
+
+        return $user;
     }
+
 }

@@ -1,9 +1,7 @@
 FROM php:8.2-fpm
 
-# Run as root user
 USER root
 
-# Install system dependencies including gnupg for key management
 RUN apt-get update && apt-get install -y \
     git \
     zip \
@@ -12,7 +10,11 @@ RUN apt-get update && apt-get install -y \
     unixodbc-dev \
     g++ \
     make \
-    gnupg
+    gnupg \
+    libmariadb-dev
+
+# Install the pdo_mysql extension
+RUN docker-php-ext-install pdo_mysql
 
 # Copy Composer from the official Composer image
 COPY --chmod=755 --from=composer:latest /usr/bin/composer /usr/local/bin/composer
