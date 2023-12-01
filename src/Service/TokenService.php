@@ -34,14 +34,19 @@ class TokenService
         $refreshToken = bin2hex(random_bytes(64));
         $hashedToken = hash('sha256', $refreshToken);
 
-        $refreshTokenEntity = new RefreshToken();
-        $refreshTokenEntity->setUser($user);
-        $refreshTokenEntity->setToken($hashedToken);
-        $expirationDate = new DateTime();
-        $expirationDate->modify('+1 week');
-        $refreshTokenEntity->setExpiresAt($expirationDate);
-        $this->entityManager->persist($refreshTokenEntity);
-        $this->entityManager->flush();
+        $existingToken = $this->entityManager->getRepository(RefreshToken::class)->findOneBy(['user' => $user]);
+
+        if ($existingToken) {
+            $existingToken->setToken($hashedToken);
+            $this->entityManager->flush();
+        } else {
+            $refreshTokenEntity = new RefreshToken();
+            $refreshTokenEntity->setUser($user);
+            $refreshTokenEntity->setToken($hashedToken);
+
+            $this->entityManager->persist($refreshTokenEntity);
+            $this->entityManager->flush();
+        }
 
         return $refreshToken;
     }

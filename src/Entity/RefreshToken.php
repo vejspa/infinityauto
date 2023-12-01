@@ -23,7 +23,7 @@ class RefreshToken
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private string $token;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
