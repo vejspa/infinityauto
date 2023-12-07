@@ -21,23 +21,23 @@ use Doctrine\ORM\Mapping as ORM;
     operations: [
         new GetCollection(
             uriTemplate: '/car_makes',
-            status: 200,
+            security: "is_granted('ROLE_ADMIN')"
         ),
         new Get(
             uriTemplate: '/car_makes/{id}',
-            status: 200,
+            security: "is_granted('IS_AUTHENTICATED_FULLY')"
         ),
         new Post(
-            uriTemplate: '/car_makes/{id}',
-            status: 201,
+            uriTemplate: '/car_makes',
+            security: "is_granted('ROLE_ADMIN')"
         ),
         new Put(
             uriTemplate: '/car_makes/{id}',
-            status: 201,
+            security: "is_granted('ROLE_ADMIN')"
         ),
         new Delete(
             uriTemplate: '/car_makes/{id}',
-            status: 204,
+            security: "is_granted('ROLE_ADMIN')"
         ),
     ]
 )]

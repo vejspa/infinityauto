@@ -28,7 +28,6 @@ class SecurityController extends AbstractController
      * @throws Exception
      */
     #[Route('/api/login', name: 'api_login')]
-
     public function login(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
