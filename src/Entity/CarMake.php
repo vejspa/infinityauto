@@ -21,11 +21,9 @@ use Doctrine\ORM\Mapping as ORM;
     operations: [
         new GetCollection(
             uriTemplate: '/car_makes',
-            security: "is_granted('ROLE_ADMIN')"
         ),
         new Get(
             uriTemplate: '/car_makes/{id}',
-            security: "is_granted('IS_AUTHENTICATED_FULLY')"
         ),
         new Post(
             uriTemplate: '/car_makes',
