@@ -67,7 +67,7 @@ class CarType
     private ?string $name = null;
 
     #[ORM\ManyToOne(targetEntity: CarModel::class, inversedBy: "types")]
-    #[ORM\JoinColumn(name: "id", referencedColumnName: "id")]
+    #[ORM\JoinColumn(name: "model_id", referencedColumnName: "id")]
     private ?CarModel $model = null;
 
     public function getId(): ?int

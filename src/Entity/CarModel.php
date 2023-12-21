@@ -62,7 +62,7 @@ class CarModel
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: CarMake::class, inversedBy: "models")]
-    #[ORM\JoinColumn(name: "id", referencedColumnName: "id")]
+    #[ORM\JoinColumn(name: "make_id", referencedColumnName: "id")]
     private ?CarMake $make = null;
 
     #[ORM\OneToMany(mappedBy: "model", targetEntity: CarType::class)]
