@@ -25,20 +25,25 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Get(
             uriTemplate: '/cars/{id}',
             status: 200,
-            denormalizationContext: ['groups' => ['write']],
 
         ),
         new Post(
             uriTemplate: '/cars/{id}',
             status: 201,
+            denormalizationContext: ['groups' => ['write']],
+
         ),
         new Put(
             uriTemplate: '/cars/{id}',
             status: 201,
+            denormalizationContext: ['groups' => ['write']],
+
         ),
         new Delete(
             uriTemplate: '/cars/{id}',
             status: 204,
+            denormalizationContext: ['groups' => ['write']],
+
         ),
     ]
 )]
