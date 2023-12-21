@@ -27,7 +27,6 @@ use Doctrine\ORM\Mapping as ORM;
         ),
         new Post(
             uriTemplate: '/car_makes',
-            security: "is_granted('ROLE_ADMIN')"
         ),
         new Put(
             uriTemplate: '/car_makes/{id}',

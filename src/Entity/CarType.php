@@ -75,13 +75,6 @@ class CarType
         return $this->id;
     }
 
-    public function setTypeId(int $type_id): static
-    {
-        $this->type_id = $type_id;
-
-        return $this;
-    }
-
     public function getName(): ?string
     {
         return $this->name;
