@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\CarRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CarRepository::class)]
 #[ApiResource(
@@ -24,6 +25,8 @@ use Doctrine\ORM\Mapping as ORM;
         new Get(
             uriTemplate: '/cars/{id}',
             status: 200,
+            denormalizationContext: ['groups' => ['write']],
+
         ),
         new Post(
             uriTemplate: '/cars/{id}',
@@ -47,15 +50,19 @@ class Car
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups('write')]
     private ?int $car_id = null;
 
     #[ORM\Column]
+    #[Groups('write')]
     private ?int $model_id = null;
 
     #[ORM\Column]
+    #[Groups('write')]
     private ?int $make_id = null;
 
     #[ORM\Column]
+    #[Groups('write')]
     private ?int $type_id = null;
 
     public function getId(): ?int
