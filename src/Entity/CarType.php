@@ -63,24 +63,16 @@ class CarType
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $type_id = null;
-
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
     #[ORM\ManyToOne(targetEntity: CarModel::class, inversedBy: "types")]
-    #[ORM\JoinColumn(name: "model_id", referencedColumnName: "id")]
+    #[ORM\JoinColumn(name: "id", referencedColumnName: "id")]
     private ?CarModel $model = null;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getTypeId(): ?int
-    {
-        return $this->type_id;
     }
 
     public function setTypeId(int $type_id): static

@@ -62,15 +62,12 @@ class CarModel
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: CarMake::class, inversedBy: "models")]
-    #[ORM\JoinColumn(name: "make_id", referencedColumnName: "id")]
+    #[ORM\JoinColumn(name: "id", referencedColumnName: "id")]
     private ?CarMake $make = null;
 
     #[ORM\OneToMany(mappedBy: "model", targetEntity: CarType::class)]
     private Collection $types;
   
-    #[ORM\Column]
-    private ?int $model_id = null;
-
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -84,18 +81,6 @@ class CarModel
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getModelId(): ?int
-    {
-        return $this->model_id;
-    }
-
-    public function setModelId(int $model_id): static
-    {
-        $this->model_id = $model_id;
-
-        return $this;
     }
 
     public function getName(): ?string
